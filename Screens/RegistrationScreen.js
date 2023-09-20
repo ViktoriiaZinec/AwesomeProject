@@ -14,6 +14,7 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableHighlight,
+  Image,
 } from "react-native";
 import React, { useReducer } from "react";
 
@@ -44,7 +45,7 @@ const reducer = (state, action) => {
 
 const RegistrationScreen = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const navigation = useNavigation();
 
   const onLogin = () => {
@@ -58,63 +59,65 @@ const RegistrationScreen = () => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <ImageBackground
-          resizeMode="cover"
           style={styles.imgBackground}
           source={require("../assets/img/registration_bckg.jpg")}
         >
-          {/* <SafeAreaView style={{ flex: 1 }}> */}
-
           <KeyboardAvoidingView
-            style={styles.keyBoard}
+            keyboardVerticalOffset={-22}
             behavior={Platform.OS == "ios" ? "padding" : "position"}
-            enabled
           >
-            <ScrollView>
-              <View>
-                <Text style={styles.header}>Реєстрація</Text>
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Логін"
-                  value={state.name}
-                  onChangeText={(text) =>
-                    dispatch({ type: actionTypes.SET_NAME, payload: text })
-                  }
-                ></TextInput>
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Адреса електронної пошти"
-                  value={state.email}
-                  onChangeText={(text) =>
-                    dispatch({ type: actionTypes.SET_EMAIL, payload: text })
-                  }
-                ></TextInput>
-
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Пароль"
-                  value={state.password}
-                  onChangeText={(text) =>
-                    dispatch({ type: actionTypes.SET_PASSWORD, payload: text })
-                  }
-                  secureTextEntry={true}
-                ></TextInput>
-                <TouchableOpacity style={styles.button} onPress={onLogin}>
-                  <Text style={styles.btnText}>Зареєструватися</Text>
+            <View style={styles.formContainer}>
+              <View style={styles.avatarContainer}>
+                <Image
+                  style={styles.avatar}
+                  source={require("../assets/svg/avatar.svg")}
+                />
+                <TouchableOpacity>
+                  <Image
+                    style={styles.addIcon}
+                    source={require("../assets/img/add.png")}
+                  />
                 </TouchableOpacity>
-
-                <View style={styles.linkContainer}>
-                  <Text style={styles.link}>Вже є акаунт?</Text>
-                  <TouchableOpacity
-                    onPress={() => navigation.navigate("Login")}
-                  >
-                    <Text style={styles.link}> Увійти</Text>
-                  </TouchableOpacity>
-                </View>
               </View>
-            </ScrollView>
-          </KeyboardAvoidingView>
+              <Text style={styles.header}>Реєстрація</Text>
+              <TextInput
+                style={styles.textInput}
+                placeholder="Логін"
+                value={state.name}
+                onChangeText={(text) =>
+                  dispatch({ type: actionTypes.SET_NAME, payload: text })
+                }
+              ></TextInput>
+              <TextInput
+                style={styles.textInput}
+                placeholder="Адреса електронної пошти"
+                value={state.email}
+                onChangeText={(text) =>
+                  dispatch({ type: actionTypes.SET_EMAIL, payload: text })
+                }
+              ></TextInput>
 
-          {/* </SafeAreaView> */}
+              <TextInput
+                style={styles.textInput}
+                placeholder="Пароль"
+                value={state.password}
+                onChangeText={(text) =>
+                  dispatch({ type: actionTypes.SET_PASSWORD, payload: text })
+                }
+                secureTextEntry={true}
+              ></TextInput>
+              <TouchableOpacity style={styles.button} onPress={onLogin}>
+                <Text style={styles.btnText}>Зареєструватися</Text>
+              </TouchableOpacity>
+
+              <View style={styles.linkContainer}>
+                <Text style={styles.link}>Вже є акаунт?</Text>
+                <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                  <Text style={styles.link}> Увійти</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </KeyboardAvoidingView>
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>
@@ -124,25 +127,42 @@ const RegistrationScreen = () => {
 export default RegistrationScreen;
 
 const styles = StyleSheet.create({
-  container: { alignSelf: "stretch", flex: 1 },
+  container: { flex: 1 },
 
-  keyBoard: {
+  formContainer: {
+    position: "relative",
     justifyContent: "center",
     paddingLeft: 16,
     paddingRight: 16,
     paddingTop: 92,
+    paddingBottom: 8,
     backgroundColor: "#ffffff",
-    marginTop: "auto",
-    marginBottom: 0,
-    paddingBottom: 16,
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
+    marginBottom: 0,
   },
-  // container: { flex: 1 },
   imgBackground: {
+    flex: 1,
     resizeMode: "cover",
-    width: "100%",
-    height: "100%",
+    justifyContent: "flex-end",
+  },
+  avatarContainer: {
+    position: "absolute",
+    width: 120,
+    height: 120,
+    backgroundColor: "#f6f6f6",
+    borderRadius: 16,
+    top: -60,
+    left: "50%",
+    marginLeft: -48,
+  },
+  addIcon: {
+    position: "absolute",
+    borderRadius: 100,
+    width: 24,
+    height: 24,
+    top: 45,
+    right: -11,
   },
   header: {
     fontFamily: "Roboto500",
