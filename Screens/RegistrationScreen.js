@@ -11,7 +11,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 
 const initialState = {
   name: "",
@@ -40,6 +40,10 @@ const reducer = (state, action) => {
 
 const RegistrationScreen = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  const [isNameInputActive, setIsNameInputActive] = useState(false);
+  const [isEmailInputActive, setIsEmailInputActive] = useState(false);
+  const [isPasswordInputActive, setIsPasswordInputActive] = useState(false);
 
   const navigation = useNavigation();
 
@@ -71,29 +75,43 @@ const RegistrationScreen = () => {
               </View>
               <Text style={styles.header}>Реєстрація</Text>
               <TextInput
-                style={styles.textInput}
+                style={
+                  isNameInputActive ? styles.activeTextInput : styles.textInput
+                }
                 placeholder="Логін"
                 value={state.name}
                 onChangeText={(text) =>
                   dispatch({ type: actionTypes.SET_NAME, payload: text })
                 }
+                onFocus={() => setIsNameInputActive(true)}
+                onBlur={() => setIsNameInputActive(false)}
               ></TextInput>
               <TextInput
-                style={styles.textInput}
+                style={
+                  isEmailInputActive ? styles.activeTextInput : styles.textInput
+                }
                 placeholder="Адреса електронної пошти"
                 value={state.email}
                 onChangeText={(text) =>
                   dispatch({ type: actionTypes.SET_EMAIL, payload: text })
                 }
+                onFocus={() => setIsEmailInputActive(true)}
+                onBlur={() => setIsEmailInputActive(false)}
               ></TextInput>
 
               <TextInput
-                style={styles.textInput}
+                style={
+                  isPasswordInputActive
+                    ? styles.activeTextInput
+                    : styles.textInput
+                }
                 placeholder="Пароль"
                 value={state.password}
                 onChangeText={(text) =>
                   dispatch({ type: actionTypes.SET_PASSWORD, payload: text })
                 }
+                onFocus={() => setIsPasswordInputActive(true)}
+                onBlur={() => setIsPasswordInputActive(false)}
                 secureTextEntry={true}
               ></TextInput>
               <TouchableOpacity style={styles.button} onPress={onLogin}>

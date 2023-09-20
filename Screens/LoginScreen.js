@@ -37,7 +37,10 @@ const reducer = (state, action) => {
 
 const LoginScreen = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+
+  const [isEmailInputActive, setIsEmailInputActive] = useState(false);
+  const [isPasswordInputActive, setIsPasswordInputActive] = useState(false);
+
   const navigation = useNavigation();
 
   const onLogin = () => {
@@ -66,21 +69,31 @@ const LoginScreen = () => {
               <Text style={styles.header}>Увійти</Text>
 
               <TextInput
-                style={styles.textInput}
+                style={
+                  isEmailInputActive ? styles.activeTextInput : styles.textInput
+                }
                 placeholder="Адреса електронної пошти"
                 value={state.email}
                 onChangeText={(text) =>
                   dispatch({ type: actionTypes.SET_EMAIL, payload: text })
                 }
+                onFocus={() => setIsEmailInputActive(true)}
+                onBlur={() => setIsEmailInputActive(false)}
               ></TextInput>
 
               <TextInput
-                style={styles.textInput}
+                style={
+                  isPasswordInputActive
+                    ? styles.activeTextInput
+                    : styles.textInput
+                }
                 placeholder="Пароль"
                 value={state.password}
                 onChangeText={(text) =>
                   dispatch({ type: actionTypes.SET_PASSWORD, payload: text })
                 }
+                onFocus={() => setIsPasswordInputActive(true)}
+                onBlur={() => setIsPasswordInputActive(false)}
                 secureTextEntry={true}
               ></TextInput>
               <TouchableOpacity
@@ -175,6 +188,18 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     borderWidth: 1,
     borderColor: "#E8E8E8",
+  },
+  activeTextInput: {
+    fontFamily: "Roboto400",
+    alignSelf: "stretch",
+    height: 50,
+    marginBottom: 16,
+    color: "#212121",
+    backgroundColor: "#ffffff",
+    borderRadius: 8,
+    paddingLeft: 16,
+    borderWidth: 1,
+    borderColor: "#FF6C00",
   },
   button: {
     fontFamily: "Roboto400",
