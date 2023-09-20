@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import {
   View,
   Text,
@@ -10,13 +10,8 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
-  Alert,
-  ScrollView,
-  SafeAreaView,
-  TouchableHighlight,
-  Image,
 } from "react-native";
-import React, { useReducer } from "react";
+import { useReducer } from "react";
 
 const initialState = {
   name: "",
@@ -45,11 +40,11 @@ const reducer = (state, action) => {
 
 const RegistrationScreen = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+
   const navigation = useNavigation();
 
   const onLogin = () => {
-    Alert.alert(
+    console.log(
       "Credentials",
       `${state.name} +${state.email}+ ${state.password}`
     );
@@ -68,15 +63,10 @@ const RegistrationScreen = () => {
           >
             <View style={styles.formContainer}>
               <View style={styles.avatarContainer}>
-                <Image
-                  style={styles.avatar}
-                  source={require("../assets/svg/avatar.svg")}
-                />
                 <TouchableOpacity>
-                  <Image
-                    style={styles.addIcon}
-                    source={require("../assets/img/add.png")}
-                  />
+                  <View style={styles.iconContainer}>
+                    <Ionicons name="ios-add" size={13} color="#FF6C00" />
+                  </View>
                 </TouchableOpacity>
               </View>
               <Text style={styles.header}>Реєстрація</Text>
@@ -156,20 +146,26 @@ const styles = StyleSheet.create({
     left: "50%",
     marginLeft: -48,
   },
-  addIcon: {
+  iconContainer: {
     position: "absolute",
+    top: 80,
+    right: -12,
+    overflow: "hidden",
+    backgroundColor: "#ffffff",
     borderRadius: 100,
-    width: 24,
-    height: 24,
-    top: 45,
-    right: -11,
+    borderColor: "#FF6C00",
+    borderWidth: 1,
+    width: 25,
+    height: 25,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     fontFamily: "Roboto500",
     fontSize: 30,
     color: "#212121",
     textAlign: "center",
-    fontWeight: "500",
     marginBottom: 33,
   },
   textInput: {
@@ -184,6 +180,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#E8E8E8",
   },
+  activeTextInput: {
+    fontFamily: "Roboto400",
+    alignSelf: "stretch",
+    height: 50,
+    marginBottom: 16,
+    color: "#212121",
+    backgroundColor: "#ffffff",
+    borderRadius: 8,
+    paddingLeft: 16,
+    borderWidth: 1,
+    borderColor: "#FF6C00",
+  },
+
   button: {
     fontFamily: "Roboto400",
     alignSelf: "stretch",

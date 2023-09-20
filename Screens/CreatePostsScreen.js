@@ -1,19 +1,19 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-const PostsScreen = () => {
+const CreatePostsScreen = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View>
-          <Text style={styles.text}>Публікації</Text>
+          <Text style={styles.text}>Створити публікацію</Text>
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+        <TouchableOpacity onPress={() => navigation.navigate("Posts")}>
           <View style={styles.iconContainer}>
-            <Ionicons name="ios-exit-outline" size={24} color="#bdbdbd" />
+            <Ionicons name="ios-arrow-back-outline" size={24} color="#BDBDBD" />
           </View>
         </TouchableOpacity>
       </View>
@@ -21,7 +21,7 @@ const PostsScreen = () => {
   );
 };
 
-export default PostsScreen;
+export default CreatePostsScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     position: "absolute",
-    right: 10,
+    left: 10,
     top: -36,
   },
 });

@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import {
   View,
   Text,
@@ -10,8 +11,6 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
-  Alert,
-  Image,
 } from "react-native";
 import React, { useReducer } from "react";
 
@@ -42,7 +41,7 @@ const LoginScreen = () => {
   const navigation = useNavigation();
 
   const onLogin = () => {
-    Alert.alert("Credentials", `${state.email}+ ${state.password}`);
+    console.log("Credentials", `${state.email}+ ${state.password}`);
   };
 
   return (
@@ -58,15 +57,10 @@ const LoginScreen = () => {
           >
             <View style={styles.formContainer}>
               <View style={styles.avatarContainer}>
-                <Image
-                  style={styles.avatar}
-                  source={require("../assets/svg/avatar.svg")}
-                />
                 <TouchableOpacity>
-                  <Image
-                    style={styles.addIcon}
-                    source={require("../assets/img/add.png")}
-                  />
+                  <View style={styles.iconContainer}>
+                    <Ionicons name="ios-add" size={13} color="#FF6C00" />
+                  </View>
                 </TouchableOpacity>
               </View>
               <Text style={styles.header}>Увійти</Text>
@@ -89,13 +83,21 @@ const LoginScreen = () => {
                 }
                 secureTextEntry={true}
               ></TextInput>
-              <TouchableOpacity style={styles.button} onPress={onLogin}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  onLogin();
+                  navigation.navigate("Home");
+                }}
+              >
                 <Text style={styles.btnText}>Увійти</Text>
               </TouchableOpacity>
 
               <View style={styles.linkContainer}>
                 <Text style={styles.link}>Немає акаунту?</Text>
-                <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("Registration")}
+                >
                   <Text style={styles.link}> Зареєструватися</Text>
                 </TouchableOpacity>
               </View>
@@ -139,20 +141,27 @@ const styles = StyleSheet.create({
     left: "50%",
     marginLeft: -48,
   },
-  addIcon: {
+  iconContainer: {
     position: "absolute",
+    top: 80,
+    right: -12,
+    overflow: "hidden",
+    backgroundColor: "#ffffff",
     borderRadius: 100,
-    width: 24,
-    height: 24,
-    top: 45,
-    right: -11,
+    borderColor: "#FF6C00",
+    borderWidth: 1,
+    width: 25,
+    height: 25,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     fontFamily: "Roboto500",
     fontSize: 30,
     color: "#212121",
     textAlign: "center",
-    fontWeight: "500",
+
     marginBottom: 33,
   },
   textInput: {
