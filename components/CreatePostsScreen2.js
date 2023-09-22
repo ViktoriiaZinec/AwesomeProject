@@ -18,7 +18,7 @@ import * as Location from "expo-location";
 import * as ImagePicker from "expo-image-picker";
 
 import Button from "../components/button";
-
+// import pickImageFromGallery from "../components/pickImageFromGallery";
 
 export default function App() {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -65,17 +65,18 @@ export default function App() {
         console.log("Please grant location permissions");
         return;
       }
-
+      console.log("requested");
       let currentLocation = await Location.getCurrentPositionAsync({});
       setLocation(currentLocation);
       console.log("Location:");
       console.log(currentLocation);
     };
-
+    console.log("start");
     getPermissions();
   }, []);
 
   const reverseGeocode = async () => {
+    console.log("Reverse Started");
     const reverseGeocodedAddress = await Location.reverseGeocodeAsync({
       longitude: location.coords.longitude,
       latitude: location.coords.latitude,
@@ -90,24 +91,9 @@ export default function App() {
 
     console.log("Reverse Geocoded:");
     console.log(reverseGeocodedAddress);
+
+    // setLocation(location);
     setAddress(`${city}, ${street}, ${streetNumber}`);
-  };
-
-  const pickImageFromGallery = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status === "granted") {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      });
-      if (!result.canceled) {
-        const selectedAssets = result.assets;
-
-        selectedAssets.forEach((asset) => {
-          setImage(asset.uri);
-          reverseGeocode();
-        });
-      }
-    }
   };
 
   const savePicture = async () => {
@@ -342,10 +328,22 @@ const styles = StyleSheet.create({
 
   cameraContainer: {
     justifyContent: "center",
+    // height: 280,
     paddingHorizontal: 16,
     paddingTop: 32,
   },
-
+  // cameraButton: {
+  //   marginTop: -70,
+  //   marginLeft: "auto",
+  //   marginRight: "auto",
+  //   backgroundColor: "rgba(255, 255, 255, 0.30)",
+  //   width: 60,
+  //   height: 60,
+  //   alignItems: "center",
+  //   paddingTop: 12,
+  //   borderRadius: 100,
+  //   paddingLeft: 14,
+  // },
   cameraButton: {
     marginTop: 110,
     marginLeft: "auto",
@@ -359,15 +357,33 @@ const styles = StyleSheet.create({
     paddingLeft: 14,
   },
 
+  controls: {
+    // flex: 0.5,
+  },
+  button: {
+    // height: 40,
+    // borderRadius: 6,
+    // flexDirection: "row",
+    // alignItems: "center",
+    // justifyContent: "center",
+    // color: "#bdbdbd",
+  },
+
   camera: {
+    // flex: 5,
     height: 240,
     borderRadius: 8,
   },
+  // topControls: {
+  //   flex: 1,
+  // },
   galleryButtonText: {
     color: "#bdbdbd",
     paddingTop: 8,
   },
-
+  imgGet: {
+    // marginBottom: 40,
+  },
   inputContainer: {
     marginTop: -176,
     paddingHorizontal: 16,

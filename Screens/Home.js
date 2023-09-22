@@ -15,17 +15,6 @@ const Home = () => {
   return (
     <Tabs.Navigator
       screenOptions={({ route }) => ({
-        // tabBarButton: (props) => {
-        //   const customStyles = {
-        //     backgroundColor: "transparent",
-        //     borderRadius: 100,
-        //     paddingVertical: 8,
-        //     width: 70,
-        //     marginRight: 10,
-        //   };
-
-        //   return <TouchableOpacity {...props} style={customStyles} />;
-        // },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
