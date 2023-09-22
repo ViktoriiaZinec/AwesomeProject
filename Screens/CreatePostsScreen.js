@@ -43,13 +43,10 @@ export default function App() {
     })();
   }, []);
 
-  const takePicture = async () => {
-    console.log("camera 0=============");
+  const takePicture = async () => {   
     if (cameraRef) {
-      try {
-        console.log("camera 1=============", cameraRef);
-        const data = await cameraRef.current.takePictureAsync();
-        console.log("camera 2=============", data);
+      try {      
+        const data = await cameraRef.current.takePictureAsync();   
         setImage(data.uri);
         reverseGeocode();
       } catch (error) {
@@ -68,8 +65,8 @@ export default function App() {
 
       let currentLocation = await Location.getCurrentPositionAsync({});
       setLocation(currentLocation);
-      console.log("Location:");
-      console.log(currentLocation);
+      // console.log("Location:");
+      // console.log(currentLocation);
     };
 
     getPermissions();
@@ -80,16 +77,16 @@ export default function App() {
       longitude: location.coords.longitude,
       latitude: location.coords.latitude,
     });
-    console.log("reverseGeocodedAddress[0];", reverseGeocodedAddress[0]);
+    // console.log("reverseGeocodedAddress[0];", reverseGeocodedAddress[0]);
     const addressInfo = reverseGeocodedAddress[0];
     const city = addressInfo.city;
     const street = addressInfo.street;
     const streetNumber = addressInfo.streetNumber;
 
-    console.log(`${city}, ${street}, ${streetNumber}`);
+    // console.log(`${city}, ${street}, ${streetNumber}`);
 
-    console.log("Reverse Geocoded:");
-    console.log(reverseGeocodedAddress);
+    // console.log("Reverse Geocoded:");
+    // console.log(reverseGeocodedAddress);
     setAddress(`${city}, ${street}, ${streetNumber}`);
   };
 
@@ -244,8 +241,7 @@ export default function App() {
                   }}
                 >
                   <TouchableOpacity
-                    onPress={() => {
-                      console.log("camera 5=============");
+                    onPress={() => {                     
                       setImage(null);
                     }}
                   >

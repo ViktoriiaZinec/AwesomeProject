@@ -53,9 +53,10 @@ const PostsScreen = () => {
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("Map", { location: photo.location })
-                }
+                onPress={() => {
+                  console.log("locationMap", photo.location);
+                  navigation.navigate("Map", { location: photo.location });
+                }}
               >
                 <View style={styles.location}>
                   <Ionicons

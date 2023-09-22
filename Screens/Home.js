@@ -3,10 +3,8 @@ import { AntDesign } from "@expo/vector-icons";
 
 import PostsScreen from "./PostsScreen";
 import CreatePostsScreen from "./CreatePostsScreen";
-import CommentsScreen from "./CommentsScreen";
 import ProfileScreen from "./ProfileScreen";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 const Tabs = createBottomTabNavigator();

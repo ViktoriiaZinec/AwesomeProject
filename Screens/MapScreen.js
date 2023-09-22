@@ -1,76 +1,76 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import axios from "axios";
 
+async function getGeolocationByAddress(address) {
+  try {
+    const response = await axios.get(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+        address
+      )}`
+    );
+    if (response.data && response.data.length > 0) {
+      const firstResult = response.data[0];
+      const latitude = parseFloat(firstResult.lat);
+      const longitude = parseFloat(firstResult.lon);
+      return { latitude, longitude };
+    }
+  } catch (error) {
+    console.error("Помилка при отриманні геолокації:", error);
+    return null;
+  }
+}
+
 const MapScreen = ({ route }) => {
-  const [coordinates, setCoordinates] = useState(null);
-
-  const location = route.params?.location || "";
-  console.log("location: ", location);
-  console.log("route.params", route);
-
-  const initialRegion = {
-    latitude: 50.4501,
-    longitude: 30.5234,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  };
+  console.log("route", route.params.location);
+  const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
 
   useEffect(() => {
-    const getCoordinates = async () => {
-      try {
-        const apiKey = "AIzaSyAPKTAE3Swal8DHH7is-y7Mnsv8IEROJeU";
-        const response = await axios.get(
-          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-            location
-          )}&key=${apiKey}`
-        );
-        console.log("response", response.data);
-        const results = response.data.results;
-        if (results && results.length > 0) {
-          const { lat, lng } = results[0].geometry.location;
-          setCoordinates({ latitude: lat, longitude: lng });
-        }
-      } catch (error) {
-        console.error("Помилка отримання координат:", error);
+    const locationString = route.params.location;
+    // const locationString = "Київ,вулиця Юлії Здановської";
+    getGeolocationByAddress(locationString).then((location) => {
+      if (location) {
+        console.log("Широта:", location.latitude);
+        console.log("Довгота:", location.longitude);
+        setLocation(location);
+      } else {
+        console.log("Не вдалося отримати геолокацію за адресою.");
       }
-    };
-
-    if (location) {
-      getCoordinates();
-    }
-  }, [location]);
+    });
+  }, []);
 
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} initialRegion={initialRegion}>
-        {coordinates ? (
-          <Marker
-            coordinate={coordinates}
-            title="Місце"
-            description={location}
-          />
-        ) : (
-          initialRegion
-        )}
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: location.latitude,
+          longitude: location.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+      >
+        <Marker
+          coordinate={{
+            latitude: location.latitude,
+            longitude: location.longitude,
+          }}
+          title="Місце"
+          description="Опис місця"
+        />
       </MapView>
-      <Text>MapScreen</Text>
     </View>
   );
 };
 
-export default MapScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
-    alignItems: "center",
-    justifyContent: "center",
   },
   map: {
-    width: "100%",
-    height: "100%",
+    flex: 1,
   },
 });
+
+export default MapScreen;
