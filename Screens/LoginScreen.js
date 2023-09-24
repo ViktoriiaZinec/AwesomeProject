@@ -13,6 +13,8 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import React, { useReducer } from "react";
+import { FIREBASE_AUTH } from "../Firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 const initialState = {
   email: "",
@@ -40,11 +42,28 @@ const LoginScreen = () => {
 
   const [isEmailInputActive, setIsEmailInputActive] = useState(false);
   const [isPasswordInputActive, setIsPasswordInputActive] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
+  const auth = FIREBASE_AUTH;
 
-  const onLogin = () => {
-    console.log("Credentials", `${state.email}+ ${state.password}`);
+  const { email, password } = state;
+  
+  // const onLogin = () => {
+  //   console.log("Credentials", `${state.email}+ ${state.password}`);
+  // };
+  const signIn = async () => {
+    setLoading(true);
+    try {
+      const response = await signInWithEmailAndPassword(auth, email, password);
+      navigation.navigate("Inside");
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+      alert("Check your email and password");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -96,13 +115,14 @@ const LoginScreen = () => {
                 onBlur={() => setIsPasswordInputActive(false)}
                 secureTextEntry={true}
               ></TextInput>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={styles.button}
                 onPress={() => {
                   onLogin();
                   navigation.navigate("Home");
                 }}
-              >
+              > */}
+              <TouchableOpacity style={styles.button} onPress={signIn}>
                 <Text style={styles.btnText}>Увійти</Text>
               </TouchableOpacity>
 

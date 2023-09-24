@@ -12,6 +12,8 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { useReducer, useState } from "react";
+import { FIREBASE_AUTH } from "../Firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const initialState = {
   name: "",
@@ -44,14 +46,35 @@ const RegistrationScreen = () => {
   const [isNameInputActive, setIsNameInputActive] = useState(false);
   const [isEmailInputActive, setIsEmailInputActive] = useState(false);
   const [isPasswordInputActive, setIsPasswordInputActive] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
+  const auth = FIREBASE_AUTH;
 
-  const onLogin = () => {
-    console.log(
-      "Credentials",
-      `${state.name} +${state.email}+ ${state.password}`
-    );
+  // const onLogin = () => {
+  //   console.log(
+  //     "Credentials",
+  //     `${state.name} +${state.email}+ ${state.password}`
+  //   );
+  // };
+
+  const { name, email, password } = state;
+
+  const signUp = async () => {
+    setLoading(true);
+    try {
+      const response = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      navigation.navigate("Inside");
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -114,7 +137,8 @@ const RegistrationScreen = () => {
                 onBlur={() => setIsPasswordInputActive(false)}
                 secureTextEntry={true}
               ></TextInput>
-              <TouchableOpacity style={styles.button} onPress={onLogin}>
+              {/* <TouchableOpacity style={styles.button} onPress={onLogin}> */}
+              <TouchableOpacity style={styles.button} onPress={signUp}>
                 <Text style={styles.btnText}>Зареєструватися</Text>
               </TouchableOpacity>
 

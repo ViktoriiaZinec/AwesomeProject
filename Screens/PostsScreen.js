@@ -1,6 +1,11 @@
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { FIREBASE_AUTH } from "../Firebase";
+
+// interface RouterProps {
+//   navigation
+// }
 
 const PostsScreen = () => {
   const navigation = useNavigation();
@@ -14,7 +19,7 @@ const PostsScreen = () => {
         <View>
           <Text style={styles.text}>Публікації</Text>
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+        <TouchableOpacity onPress={() => FIREBASE_AUTH.signOut()}>
           <View style={styles.iconContainer}>
             <Ionicons name="ios-exit-outline" size={24} color="#bdbdbd" />
           </View>
