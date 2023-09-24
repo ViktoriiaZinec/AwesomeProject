@@ -77,7 +77,7 @@ const PostsScreen = () => {
         ) : (
           <>
             <Text style={styles.textEmpty}>Ще немає жодного фото</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Comments")}>
+            {/* <TouchableOpacity onPress={() => navigation.navigate("Comments")}>
               <View style={styles.iconComments}>
                 <Ionicons
                   name="ios-chatbubble-outline"
@@ -85,7 +85,7 @@ const PostsScreen = () => {
                   color="#bdbdbd"
                 />
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </>
         )}
       </View>

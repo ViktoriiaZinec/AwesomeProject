@@ -15,6 +15,9 @@ import { useReducer, useState } from "react";
 import { FIREBASE_AUTH } from "../Firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/auth/authSlice";
+
 const initialState = {
   name: "",
   email: "",
@@ -28,6 +31,7 @@ const actionTypes = {
 };
 
 const reducer = (state, action) => {
+  console.log(`action.type: ${action.type} state: ${state}`);
   switch (action.type) {
     case actionTypes.SET_NAME:
       return { ...state, name: action.payload };
@@ -51,16 +55,19 @@ const RegistrationScreen = () => {
   const navigation = useNavigation();
   const auth = FIREBASE_AUTH;
 
-  const { name, email, password } = state;
-
   const signUp = async () => {
     setLoading(true);
     try {
+      // console.log(`Email: <${email}>,${state.email}`);
+      // console.log(`state: <${state}>`);
+
       const response = await createUserWithEmailAndPassword(
         auth,
-        email,
-        password
+        state.email,
+        state.password
       );
+      const { displayName, email } = response.user;
+      dispatch(setUser({ displayName, email }));
       navigation.navigate("Inside");
       console.log(response);
     } catch (error) {

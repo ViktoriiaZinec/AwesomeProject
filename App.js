@@ -15,8 +15,9 @@ import CommentsScreen from "./Screens/CommentsScreen";
 
 import { FIREBASE_AUTH, FIREBASE_DB } from "./Firebase";
 
-// import store from "./redux/store";
-import { store, persistor } from "./redux/store";
+// import { store, persistor } from "./redux/store";
+import { store } from "./redux/store";
+import { persistor } from "./redux/store";
 
 const Stack = createStackNavigator();
 
@@ -48,15 +49,10 @@ export default function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    onAuthStateChanged(
-      FIREBASE_AUTH,
-      (user) => {
-        console.log("user", user);
-        setUser(user);
-      },
-      null,
-      null
-    );
+    onAuthStateChanged(FIREBASE_AUTH, (user) => {
+      console.log("user2", user);
+      setUser(user);
+    });
   }, []);
 
   const [fontsLoaded] = useFonts({
@@ -68,7 +64,7 @@ export default function App() {
   }
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+      <PersistGate persistor={persistor}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="LoginScreen">
             {user ? (

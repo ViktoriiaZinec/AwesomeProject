@@ -16,6 +16,9 @@ import React, { useReducer } from "react";
 import { FIREBASE_AUTH } from "../Firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/auth/authSlice";
+
 const initialState = {
   email: "",
   password: "",
@@ -48,7 +51,7 @@ const LoginScreen = () => {
   const auth = FIREBASE_AUTH;
 
   const { email, password } = state;
-  
+
   // const onLogin = () => {
   //   console.log("Credentials", `${state.email}+ ${state.password}`);
   // };
@@ -56,6 +59,8 @@ const LoginScreen = () => {
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
+      const { displayName, email } = response.user;
+      dispatch(setUser({ displayName, email }));
       navigation.navigate("Inside");
       console.log(response);
     } catch (error) {
