@@ -3,14 +3,20 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import { User, onAuthStateChanged } from "firebase/auth";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { useEffect, useState } from "react";
 
 import LoginScreen from "./Screens/LoginScreen";
 import RegistrationScreen from "./Screens/RegistrationScreen";
 import Home from "./Screens/Home";
 import MapScreen from "./Screens/MapScreen";
 import CommentsScreen from "./Screens/CommentsScreen";
-import { useEffect, useState } from "react";
-import { FIREBASE_AUTH } from "./Firebase";
+
+import { FIREBASE_AUTH, FIREBASE_DB } from "./Firebase";
+
+// import store from "./redux/store";
+import { store, persistor } from "./redux/store";
 
 const Stack = createStackNavigator();
 
@@ -42,10 +48,15 @@ export default function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    onAuthStateChanged(FIREBASE_AUTH, (user) => {
-      console.log("user", user);
-      setUser(user);
-    });
+    onAuthStateChanged(
+      FIREBASE_AUTH,
+      (user) => {
+        console.log("user", user);
+        setUser(user);
+      },
+      null,
+      null
+    );
   }, []);
 
   const [fontsLoaded] = useFonts({
@@ -56,30 +67,32 @@ export default function App() {
     return null;
   }
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="LoginScreen">
-        {user ? (
-          <Stack.Screen
-            name="Inside"
-            component={InsideLayout}
-            options={{ headerShown: false }}
-          />
-        ) : (
-          <>
-            <Stack.Screen
-              name="Login"
-              component={LoginScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Registration"
-              component={RegistrationScreen}
-              options={{ headerShown: false }}
-            />
-          </>
-        )}
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="LoginScreen">
+            {user ? (
+              <Stack.Screen
+                name="Inside"
+                component={InsideLayout}
+                options={{ headerShown: false }}
+              />
+            ) : (
+              <>
+                <Stack.Screen
+                  name="Login"
+                  component={LoginScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Registration"
+                  component={RegistrationScreen}
+                  options={{ headerShown: false }}
+                />
+              </>
+            )}
 
-        {/* <Stack.Screen
+            {/* <Stack.Screen
           name="Home"
           component={Home}
           options={{ headerShown: false }}
@@ -94,7 +107,9 @@ export default function App() {
           component={CommentsScreen}
           options={{ headerShown: false }}
         /> */}
-      </Stack.Navigator>
-    </NavigationContainer>
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PersistGate>
+    </Provider>
   );
 }

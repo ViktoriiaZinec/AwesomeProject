@@ -51,13 +51,6 @@ const RegistrationScreen = () => {
   const navigation = useNavigation();
   const auth = FIREBASE_AUTH;
 
-  // const onLogin = () => {
-  //   console.log(
-  //     "Credentials",
-  //     `${state.name} +${state.email}+ ${state.password}`
-  //   );
-  // };
-
   const { name, email, password } = state;
 
   const signUp = async () => {
