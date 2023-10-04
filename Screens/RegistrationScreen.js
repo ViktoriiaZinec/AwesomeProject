@@ -13,68 +13,46 @@ import {
 } from "react-native";
 import { useReducer, useState } from "react";
 import { FIREBASE_AUTH } from "../Firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 import { useDispatch } from "react-redux";
-import { setUser } from "../redux/auth/authSlice";
-
-const initialState = {
-  name: "",
-  email: "",
-  password: "",
-};
-
-const actionTypes = {
-  SET_NAME: "SET_NAME",
-  SET_EMAIL: "SET_EMAIL",
-  SET_PASSWORD: "SET_PASSWORD",
-};
-
-const reducer = (state, action) => {
-  console.log(`action.type: ${action.type} state: ${state}`);
-  switch (action.type) {
-    case actionTypes.SET_NAME:
-      return { ...state, name: action.payload };
-    case actionTypes.SET_EMAIL:
-      return { ...state, email: action.payload };
-    case actionTypes.SET_PASSWORD:
-      return { ...state, password: action.payload };
-    default:
-      return state;
-  }
-};
+import {
+  setName,
+  setEmail,
+  setPassword,
+  setLoggedIn,
+} from "../redux/auth/authSlice";
 
 const RegistrationScreen = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [avatar, setAvatar] = useState(null);
+  const [login, setLogin] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
 
   const [isNameInputActive, setIsNameInputActive] = useState(false);
   const [isEmailInputActive, setIsEmailInputActive] = useState(false);
   const [isPasswordInputActive, setIsPasswordInputActive] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const auth = FIREBASE_AUTH;
 
   const signUp = async () => {
     setLoading(true);
-    try {
-      // console.log(`Email: <${email}>,${state.email}`);
-      // console.log(`state: <${state}>`);
 
-      const response = await createUserWithEmailAndPassword(
-        auth,
-        state.email,
-        state.password
-      );
-      const { displayName, email } = response.user;
-      dispatch(setUser({ displayName, email }));
-      navigation.navigate("Inside");
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
+    const photo = avatar ? await uploadImageToServer(avatar, "avatars") : null;
+
+    dispatch(authSignUpUser({ photo, login, email, password })).then((data) => {
+      if (data === undefined || !data.uid) {
+        alert(`Реєстрацію не виконано!`);
+        return;
+      }
+      dispatch(authStateChange({ stateChange: true }));
+      console.log(data);
+    });
+
+    console.log({ login, email, password, photo });
   };
 
   return (
@@ -102,24 +80,23 @@ const RegistrationScreen = () => {
                   isNameInputActive ? styles.activeTextInput : styles.textInput
                 }
                 placeholder="Логін"
-                value={state.name}
-                onChangeText={(text) =>
-                  dispatch({ type: actionTypes.SET_NAME, payload: text })
-                }
+                placeholderTextColor="#bdbdbd"
+                value={login}
+                onChangeText={setLogin}
                 onFocus={() => setIsNameInputActive(true)}
                 onBlur={() => setIsNameInputActive(false)}
+                editable={true}
               ></TextInput>
               <TextInput
                 style={
                   isEmailInputActive ? styles.activeTextInput : styles.textInput
                 }
                 placeholder="Адреса електронної пошти"
-                value={state.email}
-                onChangeText={(text) =>
-                  dispatch({ type: actionTypes.SET_EMAIL, payload: text })
-                }
+                value={email}
+                onChangeText={setEmail}
                 onFocus={() => setIsEmailInputActive(true)}
                 onBlur={() => setIsEmailInputActive(false)}
+                editable={true}
               ></TextInput>
 
               <TextInput
@@ -129,15 +106,14 @@ const RegistrationScreen = () => {
                     : styles.textInput
                 }
                 placeholder="Пароль"
-                value={state.password}
-                onChangeText={(text) =>
-                  dispatch({ type: actionTypes.SET_PASSWORD, payload: text })
-                }
+                value={password}
+                onChangeText={setPassword}
                 onFocus={() => setIsPasswordInputActive(true)}
                 onBlur={() => setIsPasswordInputActive(false)}
+                editable={true}
                 secureTextEntry={true}
               ></TextInput>
-              {/* <TouchableOpacity style={styles.button} onPress={onLogin}> */}
+
               <TouchableOpacity style={styles.button} onPress={signUp}>
                 <Text style={styles.btnText}>Зареєструватися</Text>
               </TouchableOpacity>

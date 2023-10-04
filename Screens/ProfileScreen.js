@@ -1,6 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../Firebase";
+
 import {
   View,
   Text,
@@ -12,6 +14,8 @@ import {
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
+
+  const { user } = useSelector((state) => state.auth);
 
   return (
     <View style={styles.container}>
@@ -27,10 +31,13 @@ const ProfileScreen = () => {
               </View>
             </TouchableOpacity>
           </View>
-          <View style={styles.logoutContainer}>
-            <Ionicons name="ios-exit-outline" size={24} color="#bdbdbd" />
-          </View>
-          <Text style={styles.header}>Наталі Романова</Text>
+
+          <TouchableOpacity onPress={() => FIREBASE_AUTH.signOut()}>
+            <View style={styles.logoutContainer}>
+              <Ionicons name="ios-exit-outline" size={24} color="#bdbdbd" />
+            </View>
+          </TouchableOpacity>
+          <Text style={styles.header}>{user.displayName}</Text>
         </View>
       </ImageBackground>
     </View>
@@ -88,7 +95,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 25,
     height: 25,
-    top: 22,
+    top: -72,
     right: 16,
   },
   header: {

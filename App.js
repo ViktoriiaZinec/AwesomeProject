@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import { User, onAuthStateChanged } from "firebase/auth";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { useEffect, useState } from "react";
 
@@ -18,6 +18,7 @@ import { FIREBASE_AUTH, FIREBASE_DB } from "./Firebase";
 // import { store, persistor } from "./redux/store";
 import { store } from "./redux/store";
 import { persistor } from "./redux/store";
+import { authStateChangeUser } from "./redux/auth/actions";
 
 const Stack = createStackNavigator();
 
@@ -46,13 +47,19 @@ function InsideLayout() {
 }
 
 export default function App() {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
+
+  // useEffect(() => {
+  //   onAuthStateChanged(FIREBASE_AUTH, (user) => {
+  //     console.log("", user);
+  //     setUser(user);
+  //   });
+  // }, []);
+  const dispatch = useDispatch();
+  const stateChange = useSelector(selectStateChange);
 
   useEffect(() => {
-    onAuthStateChanged(FIREBASE_AUTH, (user) => {
-      console.log("user2", user);
-      setUser(user);
-    });
+    dispatch(authStateChangeUser());
   }, []);
 
   const [fontsLoaded] = useFonts({

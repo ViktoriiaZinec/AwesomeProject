@@ -15,52 +15,42 @@ import {
 import React, { useReducer } from "react";
 import { FIREBASE_AUTH } from "../Firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  setName,
+  setEmail,
+  setPassword,
+  setLoggedIn,
+} from "../redux/auth/authSlice";
 
-import { useDispatch } from "react-redux";
-import { setUser } from "../redux/auth/authSlice";
-
-const initialState = {
-  email: "",
-  password: "",
-};
-
-const actionTypes = {
-  SET_EMAIL: "SET_EMAIL",
-  SET_PASSWORD: "SET_PASSWORD",
-};
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case actionTypes.SET_EMAIL:
-      return { ...state, email: action.payload };
-    case actionTypes.SET_PASSWORD:
-      return { ...state, password: action.payload };
-    default:
-      return state;
-  }
-};
+import { useDispatch, useSelector } from "react-redux";
 
 const LoginScreen = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
 
   const [isEmailInputActive, setIsEmailInputActive] = useState(false);
   const [isPasswordInputActive, setIsPasswordInputActive] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigation = useNavigation();
   const auth = FIREBASE_AUTH;
 
-  const { email, password } = state;
+  const dispatch = useDispatch();
 
-  // const onLogin = () => {
-  //   console.log("Credentials", `${state.email}+ ${state.password}`);
-  // };
   const signIn = async () => {
     setLoading(true);
+    if (!email.trim() || !password.trim())
+      return console.warn("Будь ласка заповніть поля");
+
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
       const { displayName, email } = response.user;
-      dispatch(setUser({ displayName, email }));
+      // dispatch(setUser({ displayName, email }));
+      dispatch(setName(displayName));
+      dispatch(setEmail(email));
+      dispatch(setPassword(password));
+      dispatch(setLoggedIn(true));
       navigation.navigate("Inside");
       console.log(response);
     } catch (error) {
@@ -97,36 +87,39 @@ const LoginScreen = () => {
                   isEmailInputActive ? styles.activeTextInput : styles.textInput
                 }
                 placeholder="Адреса електронної пошти"
-                value={state.email}
-                onChangeText={(text) =>
-                  dispatch({ type: actionTypes.SET_EMAIL, payload: text })
-                }
+                value={email}
+                onChangeText={(text) => dispatch(setEmail(text))}
                 onFocus={() => setIsEmailInputActive(true)}
                 onBlur={() => setIsEmailInputActive(false)}
-              ></TextInput>
+                editable={true}
+              >
+                <TextInput
+                  style={
+                    isPasswordInputActive
+                      ? styles.activeTextInput
+                      : styles.textInput
+                  }
+                  placeholder="Пароль"
+                  value={password}
+                  onChangeText={(text) => dispatch(setPassword(text))}
+                  onFocus={() => setIsPasswordInputActive(true)}
+                  onBlur={() => setIsPasswordInputActive(false)}
+                  secureTextEntry={!showPassword}
+                  editable={true}
+                >
+                  <TouchableOpacity
+                    onPress={() => setShowPassword(!showPassword)}
+                    style={styles.showPasswordButton}
+                  >
+                    <Ionicons
+                      name={showPassword ? "ios-eye-off" : "ios-eye"}
+                      size={24}
+                      color="#FF6C00"
+                    />
+                  </TouchableOpacity>
+                </TextInput>
+              </TextInput>
 
-              <TextInput
-                style={
-                  isPasswordInputActive
-                    ? styles.activeTextInput
-                    : styles.textInput
-                }
-                placeholder="Пароль"
-                value={state.password}
-                onChangeText={(text) =>
-                  dispatch({ type: actionTypes.SET_PASSWORD, payload: text })
-                }
-                onFocus={() => setIsPasswordInputActive(true)}
-                onBlur={() => setIsPasswordInputActive(false)}
-                secureTextEntry={true}
-              ></TextInput>
-              {/* <TouchableOpacity
-                style={styles.button}
-                onPress={() => {
-                  onLogin();
-                  navigation.navigate("Home");
-                }}
-              > */}
               <TouchableOpacity style={styles.button} onPress={signIn}>
                 <Text style={styles.btnText}>Увійти</Text>
               </TouchableOpacity>

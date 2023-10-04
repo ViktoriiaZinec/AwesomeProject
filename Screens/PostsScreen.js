@@ -1,17 +1,29 @@
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { FIREBASE_AUTH } from "../Firebase";
+import { collection, addDoc } from "firebase/firestore";
 
-// interface RouterProps {
-//   navigation
-// }
+import { FIREBASE_AUTH, FIREBASE_DB } from "../Firebase";
 
 const PostsScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
   const photo = route.params?.photo;
+
+  // const writeDataToFirestore = async () => {
+  //   try {
+  //     const docRef = await addDoc(collection(FIREBASE_DB, "users"), {
+  //       first: "Ada",
+  //       last: "Lovelace",
+  //       born: 1815,
+  //     });
+  //     console.log("Document written with ID: ", docRef.id);
+  //   } catch (e) {
+  //     console.error("Error adding document: ", e);
+  //     throw e;
+  //   }
+  // };
 
   return (
     <View style={styles.container}>

@@ -1,31 +1,39 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { combineReducers } from "redux";
-import { persistReducer, persistStore } from "redux-persist";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { authReducer } from "./auth/authSlice";
+import { authSlice } from "./auth/authSlice";
+import { postSlice } from "./posts/postsSlice";
 
-const rootReducer = combineReducers({
-  auth: authReducer,
-});
-
-// Налаштування для redux-persist
 const persistConfig = {
-  key: "root",
+  key: "auth",
   storage: AsyncStorage,
+  whitelist: ["accessToken"],
 };
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-console.log("persistedReducer", persistedReducer);
-// Створення Redux Store з persistReducer
-const store = configureStore({
-  reducer: persistedReducer,
+const rootReducer = combineReducers({
+  [authSlice.name]: persistReducer(persistConfig, authSlice.reducer),
+  [postSlice.name]: postSlice.reducer,
 });
-console.log("store", store);
-// Створення persistor для redux-persist
-const persistor = persistStore(store);
 
-console.log("persistor", persistor);
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+});
 
-export { store, persistor };
+export const persistor = persistStore(store);
